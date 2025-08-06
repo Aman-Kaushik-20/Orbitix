@@ -1,0 +1,18 @@
+temp/
+.env
+backend/.venv/
+node_modules/
+data/
+test_output/
+backend/src/global_supply_chain.egg-info/
+# team_testing/
+test_graph_new/
+test_graph_rag_old/
+team_testing/
+_pycache_/
+*._pycache_/
+*.pyc/
+*.pyc
+backend/experiment.ipynb
+backend/src/utils/database_schema.sql
+*.pyc/

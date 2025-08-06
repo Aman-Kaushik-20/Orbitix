@@ -1,0 +1,33 @@
+[project]
+name = "global-supply-chain"
+version = "0.1.0"
+description = "A project for analyzing the global supply chain."
+requires-python = ">=3.12"
+
+[project.urls]
+"Homepage" = "https://github.com/user/global-supply-chain" # Replace with your project's URL
+
+[project.optional-dependencies]
+dev = [
+    "ipykernel",
+    "neo4j_graphrag",
+    "neo4j",
+    "pandas",
+    "dotenv",
+    "voyageai",
+    "PyMuPDF",
+    "Pillow",
+    "openai",
+    "agno",
+    "ag-ui-protocol",
+    "dependency_injector",
+    "loguru",
+    "fastapi",
+    "duckduckgo-search",
+    "anthropic",
+    "supabase",
+    "uvicorn",
+    "newsapi-python",
+    "asyncpg",
+    "loguru",
+]
