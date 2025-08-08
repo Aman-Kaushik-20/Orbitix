@@ -1,9 +1,12 @@
+    # Extras 
     ipykernel
-    # neo4j_graphrag
-    # neo4j
+    neo4j_graphrag
+    neo4j
+    voyageai
     # pandas
+
+
     dotenv
-    # voyageai
     # PyMuPDF
     openai
     agno
