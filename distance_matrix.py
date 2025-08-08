@@ -58,7 +58,6 @@ print('matrix_data:', matrix_data)
 
 
 
-
 '''
 {'result': [{'address_components': None, 'formatted_address': '', 'geometry': {'location': {'lat': 28.63273535, 'lng': 77.218879}, 'location_type': 'APPROXIMATE', 'viewport': {'northeast': {'lat': 28.63273535, 'lng': 77.218879}, 'southwest': {'lat': 28.63273535, 'lng': 77.218879}}}, 'place_id': '', 'plus_code': {}, 'types': ['locality', 'political']}], 'status': 'OK'}
 {'result': [{'address_components': None, 'formatted_address': '', 'geometry': {'location': {'lat': 28.695190000000004, 'lng': 77.21450999999999}, 'location_type': 'APPROXIMATE', 'viewport': {'northeast': {'lat': 28.695190000000004, 'lng': 77.21450999999999}, 'southwest': {'lat': 28.695190000000004, 'lng': 77.21450999999999}}}, 'place_id': 'ChIJzxqojer9DDkRwDFotgLcFkk', 'plus_code': {}, 'types': ['locality', 'political']}], 'status': 'OK'}
