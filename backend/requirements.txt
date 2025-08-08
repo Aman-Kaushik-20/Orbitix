@@ -1,0 +1,26 @@
+    ipykernel
+    # neo4j_graphrag
+    # neo4j
+    # pandas
+    dotenv
+    # voyageai
+    # PyMuPDF
+    openai
+    agno
+    ag-ui-protocol
+    dependency_injector
+    loguru
+    fastapi
+    duckduckgo-search
+    anthropic
+    supabase
+    uvicorn
+    newsapi-python
+    asyncpg
+    loguru
+    
+    amadeus==7.1.0
+    isodate==0.6.0
+
+    googlemaps 
+    google-maps-places

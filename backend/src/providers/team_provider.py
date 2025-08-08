@@ -5,6 +5,7 @@ from agno.models.anthropic import Claude
 from src.agents.graph_rag_agent import GraphRAGAgent
 from src.agents.news_agent import NewsAgent
 from src.agents.deep_search_agent import DeepSearchAgent
+from src.agents.amadeus.amadeus_agent import AmadeusAgent
 from src.services.working_memory_service import WorkingMemoryService
 from agno.models.message import Message
 from typing import List, Union
@@ -22,7 +23,7 @@ import asyncio
 
 class TeamAgent:
     
-    def __init__(self, graph_rag_agent:GraphRAGAgent, news_api_agent:NewsAgent, search_deepsearch_agent:DeepSearchAgent, working_memory_service:WorkingMemoryService, openai_chat_model: OpenAIChat, anthropic_chat_model:Claude, openai_client):
+    def __init__(self, graph_rag_agent:GraphRAGAgent, news_api_agent:NewsAgent, search_deepsearch_agent:DeepSearchAgent, amadeus_agent: AmadeusAgent, working_memory_service:WorkingMemoryService, openai_chat_model: OpenAIChat, anthropic_chat_model:Claude, openai_client):
         # Store model reference for potential future optimizations
         self.openai_chat_model = openai_chat_model
         self.anthropic_chat_model = anthropic_chat_model

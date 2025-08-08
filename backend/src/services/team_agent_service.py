@@ -4,6 +4,8 @@ from src.utils.schemas import History, HistoryTuple, history_tuple_to_message, g
 from src.providers.team_provider import TeamAgent
 from src.utils.schemas import MediaAttachment, MediaContent
 from src.providers.team_provider import ChatServiceResponseData
+import os
+
 
 class TeamAgentService:
     """Service wrapper for TeamAgent with history management"""
