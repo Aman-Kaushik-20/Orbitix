@@ -1,30 +1,32 @@
-    # Extras 
-    ipykernel
-    neo4j_graphrag
-    neo4j
-    voyageai
-    # pandas
+# Extras 
+ipykernel
+neo4j_graphrag
+neo4j
+voyageai
+# pandas
 
 
-    dotenv
-    # PyMuPDF
-    openai
-    agno
-    ag-ui-protocol
-    dependency_injector
-    loguru
-    fastapi
-    duckduckgo-search
-    anthropic
-    supabase
-    uvicorn
-    newsapi-python
-    asyncpg
-    loguru
-    
-    amadeus==7.1.0
-    isodate==0.6.0
+dotenv
+python-dotenv
+requests
+# PyMuPDF
+openai
+agno
+ag-ui-protocol
+dependency_injector
+loguru
+fastapi
+duckduckgo-search
+anthropic
+supabase
+uvicorn
+newsapi-python
+asyncpg
+loguru
 
-    googlemaps 
-    google-maps-places
-    elevenlabs
+googlemaps 
+elevenlabs
+amadeus==7.1.0
+isodate==0.6.0
+ 
+google-maps-places
