@@ -11,7 +11,7 @@ from google.cloud import storage
 from google.oauth2 import service_account
 from loguru import logger  # Added for logging
 
-from backend.src.utils.constants import (
+from src.utils.constants import (
     BUCKET_NAME,
     STAGING_API,
     CDN_API,
