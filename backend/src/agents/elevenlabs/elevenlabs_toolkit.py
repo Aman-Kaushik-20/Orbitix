@@ -1,3 +1,6 @@
+
+# Changed Native Agno Elevenlabs Tool Class for my use - case, For uploading to GCP
+
 import textwrap
 from base64 import b64encode
 from io import BytesIO
@@ -11,7 +14,7 @@ from agno.media import AudioArtifact
 from agno.team.team import Team
 from agno.tools import Toolkit
 from agno.utils.log import logger
-from backend.src.utils.gcs_uploads import upload_to_gcp
+from src.utils.gcs_uploads import upload_to_gcp
 
 try:
     from elevenlabs import ElevenLabs  # type: ignore

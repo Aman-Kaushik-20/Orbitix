@@ -1,13 +1,20 @@
 from agno.team.team import Team
-from agno.team import Team as OldTeam
 from agno.models.openai import OpenAIChat
 from agno.models.anthropic import Claude
-from src.agents.graph_rag_agent import GraphRAGAgent
-from src.agents.news_agent import NewsAgent
-from src.agents.deep_search_agent import DeepSearchAgent
-from src.agents.amadeus.amadeus_agent import AmadeusAgent
-from src.services.working_memory_service import WorkingMemoryService
 from agno.models.message import Message
+
+
+from src.agents.news_agent.news_agent import TravelNewsAgent
+from src.agents.deepsearch_agent.deep_search_agent import TravelResearchAgent
+from src.agents.amadeus.amadeus_agent import AmadeusAgent
+from src.agents.elevenlabs.elevenlabs_agent import ElevenLabsAgent
+from src.agents.google_maps.google_maps_agent import GoogleMapsAgent
+from src.agents.traveladvisor.travel_advisor_agent import TripAdvisorAgent
+
+from src.services.working_memory_service import WorkingMemoryService
+
+from openai import OpenAI
+
 from typing import List, Union
 from typing import Literal, Any
 from pydantic import BaseModel
@@ -23,22 +30,39 @@ import asyncio
 
 class TeamAgent:
     
-    def __init__(self, graph_rag_agent:GraphRAGAgent, news_api_agent:NewsAgent, search_deepsearch_agent:DeepSearchAgent, amadeus_agent: AmadeusAgent, working_memory_service:WorkingMemoryService, openai_chat_model: OpenAIChat, anthropic_chat_model:Claude, openai_client):
-        # Store model reference for potential future optimizations
+    def __init__(
+            self,
+            amadeus_agent_class : AmadeusAgent, 
+            elevenlabs_agent_class : ElevenLabsAgent, 
+            news_agent_class : TravelNewsAgent, 
+            travel_research_agent_class : TravelResearchAgent,
+            google_maps_agent_class : GoogleMapsAgent,
+            trip_advisor_agent_class:TripAdvisorAgent, 
+            working_memory_service:WorkingMemoryService, 
+            openai_chat_model: OpenAIChat, 
+            anthropic_chat_model:Claude, 
+            openai_client :OpenAI 
+            ):
+        
+        self.working_memory_service=working_memory_service
         self.openai_chat_model = openai_chat_model
         self.anthropic_chat_model = anthropic_chat_model
         self.openai_client = openai_client
+
+
         self.team = Team(
-            name="Global-Supply-Chain-Agentic-Team",
-            mode="route",  # Must specify mode
+            name="The-Travel-Advisor-Agentic-Team",
+            mode="coordinate", # As we need all agents in this workflow...
             model=anthropic_chat_model,
-            description="Expert team of Global Supply Chain Query Resolver",
+            description="Expert team for Travel Advisory, Travel Research, Travel Planning, Travel Anaysis, Travel Assistant",
             instructions=final_team_agent_instructions,
             members=[
-                graph_rag_agent.agent,
-                search_deepsearch_agent.agent,
-                news_api_agent.agent,
-                working_memory_service.agent
+                amadeus_agent_class.agent,
+                elevenlabs_agent_class.agent,
+                news_agent_class.agent,
+                travel_research_agent_class.agent,
+                google_maps_agent_class.agent,
+                trip_advisor_agent_class.agent,
             ],
             show_members_responses=True,
             stream=True,

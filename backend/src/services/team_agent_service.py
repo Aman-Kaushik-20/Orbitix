@@ -1,17 +1,16 @@
 from typing import Tuple
 from agno.models.message import Message
 from src.utils.schemas import History, HistoryTuple, history_tuple_to_message, get_latest_history_string
-from src.providers.team_provider import TeamAgent
+from src.teams.travel_agent_team import TeamAgent, ChatServiceResponseData
 from src.utils.schemas import MediaAttachment, MediaContent
-from src.providers.team_provider import ChatServiceResponseData
 import os
 
 
 class TeamAgentService:
     """Service wrapper for TeamAgent with history management"""
     
-    def __init__(self, team_agent: TeamAgent):
-        self.team_agent = team_agent
+    def __init__(self, team_agent_class: TeamAgent):
+        self.team_agent_class = team_agent_class
     
     async def process_message_with_history(
         self,
@@ -38,7 +37,7 @@ class TeamAgentService:
         
         
         # Run the team agent with combined context
-        async for response_data in  self.team_agent.arun_team_intermediate_steps(
+        async for response_data in  self.team_agent_class.arun_team_intermediate_steps(
             session_id=session_id,
             user_id=user_id,
             current_message=current_message,

@@ -1,32 +1,41 @@
+# Third Party Dependency Imports
 from dependency_injector import containers, providers
-import os
-from dotenv import load_dotenv
 import asyncpg
-from src.providers.voyage_embedder import VoyageEmbeddings
 import neo4j
 from neo4j_graphrag.llm import OpenAILLM
 from neo4j._async.driver import AsyncGraphDatabase
-from src.providers.neo4j_graph_query import Neo4jGraphQuery
-
+from openai import OpenAI
 from supabase import create_async_client, AsyncClient
+from amadeus import Client as AmadeusClient
 from agno.models.openai import OpenAIChat
 from agno.models.anthropic import Claude
-from openai import OpenAI
-from src.agents.graph_rag_agent import GraphRAGAgent
-from src.agents.news_agent import NewsAgent
-from src.agents.deep_search_agent import DeepSearchAgent
-from src.providers.team_provider import TeamAgent
+
+#Agents
+from src.agents.news_agent.news_agent import TravelNewsAgent
+from src.agents.deepsearch_agent.deep_search_agent import TravelResearchAgent
+from src.agents.amadeus.amadeus_agent import AmadeusAgent
+from src.agents.elevenlabs.elevenlabs_agent import ElevenLabsAgent
+from src.agents.google_maps.google_maps_agent import GoogleMapsAgent
+from src.agents.traveladvisor.travel_advisor_agent import TripAdvisorAgent
+
+#teams
+from src.teams.travel_agent_team import TeamAgent
+
+#providers
+from src.providers.voyage_embedder import VoyageEmbeddings
+
+#services
 from src.services.user_registration_service import RegisterUser
 from src.services.team_agent_service import TeamAgentService
 from src.services.working_memory_service import WorkingMemoryService
 from src.services.episodic_memory_service import EpisodicMemoryService
 from src.services.chat_service import ChatService
 
-
-
+# Python Imports
 from typing import AsyncGenerator
-
-load_dotenv()
+import os
+from dotenv import load_dotenv
+load_dotenv('backend/.env')
 
 
 async def _init_supabase_client(supabase_url: str, supabase_key: str) -> AsyncGenerator[AsyncClient, None]:
@@ -64,17 +73,22 @@ class Container(containers.DeclarativeContainer):
     neo4j_uri = os.getenv('NEO4J_URI')
     neo4j_username = os.getenv('NEO4J_USERNAME')
     neo4j_password = os.getenv('NEO4J_PASSWORD')
+    amadeus_client_id = os.getenv('AMADEUS_CLIENT_ID')
+    amadeus_client_secret = os.getenv('AMADEUS_CLIENT_SECRET')
+    supabase_url  = os.getenv("SUPABASE_URL")
+    supabase_key  = os.getenv("SUPABASE_KEY")
+    postgres_uri = os.getenv("POSTGRES_URI")
+    google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
+    trip_advisor_api_key = os.getenv('TRIPADVISOR_API_KEY')
 
-    voyage_embedder = providers.Singleton(VoyageEmbeddings, api_key=voyage_api_key)
-
-    neo4j_driver = providers.Singleton(neo4j.GraphDatabase.driver, neo4j_uri, auth=(neo4j_username, neo4j_password))
-
-    neo4j_async_driver = providers.Singleton(
-        AsyncGraphDatabase.driver,
-        neo4j_uri,
-        auth=(neo4j_username, neo4j_password)
+    # LLM Clients
+    openai_client = providers.Singleton(
+        OpenAI,
+        api_key=openai_api_key
     )
 
+
+    # Third Party Libararies llm abstraction
     neo4j_ex_llm = providers.Singleton(
         OpenAILLM,
         model_name="gpt-4o-mini",
@@ -82,7 +96,12 @@ class Container(containers.DeclarativeContainer):
             "temperature": 0  # turning temperature down for more deterministic results
         }
     )
-    
+
+    amadeus_client=AmadeusClient(
+        client_id=amadeus_client_id,
+        amadeus_client_secret=amadeus_client_secret
+    )
+
     openai_chat_model = providers.Singleton(
         OpenAIChat,
         id="gpt-4.1-2025-04-14",
@@ -99,14 +118,16 @@ class Container(containers.DeclarativeContainer):
         
     )
 
-    openai_client = providers.Singleton(
-        OpenAI,
-        api_key=openai_api_key
-    )
 
-    supabase_url  = os.getenv("SUPABASE_URL")
-    supabase_key  = os.getenv("SUPABASE_KEY")
-    postgres_uri = os.getenv("POSTGRES_URI")
+    # Database Drivers and Clients
+
+    neo4j_driver = providers.Singleton(neo4j.GraphDatabase.driver, neo4j_uri, auth=(neo4j_username, neo4j_password))
+
+    neo4j_async_driver = providers.Singleton(
+        AsyncGraphDatabase.driver,
+        neo4j_uri,
+        auth=(neo4j_username, neo4j_password)
+    )
 
     supabase_client = providers.Resource(
         _init_supabase_client,
@@ -120,14 +141,52 @@ class Container(containers.DeclarativeContainer):
     )
 
 
-
-    graph_rag_query_service=providers.Singleton(
-        Neo4jGraphQuery,
-        driver=neo4j_driver,
-        ex_llm = neo4j_ex_llm,
-        embedder=voyage_embedder,
-
+    # Agent Class Objects
+    amadeus_agent_class = providers.Singleton(
+        AmadeusAgent,
+        amadeus_client=amadeus_client,
+        openai_chat_model=openai_chat_model,
+        anthropic_chat_model=anthropic_chat_model
     )
+
+
+    elevenlabs_agent_class = providers.Singleton(
+        ElevenLabsAgent,
+        perplexity_api_key=perplexity_api_key
+    )
+
+    news_agent_class = providers.Singleton(
+        TravelNewsAgent,
+        news_api_key=news_api_key,
+        openai_chat_model=openai_chat_model,
+        anthropic_chat_model=anthropic_chat_model,
+    )
+    
+    travel_research_agent_class = providers.Singleton(
+        TravelResearchAgent,
+        perplexity_api_key=perplexity_api_key,
+        openai_chat_model=openai_chat_model,
+        anthropic_chat_model=anthropic_chat_model,
+    )
+
+    google_maps_agent_class = providers.Singleton(
+        GoogleMapsAgent,
+        google_maps_api_key = google_maps_api_key, 
+        perplexity_api_key = perplexity_api_key, 
+        openai_chat_model = openai_chat_model
+    )
+
+    trip_advisor_agent_class = providers.Singleton(
+        TripAdvisorAgent,
+        trip_advisor_api_key=trip_advisor_api_key,
+    )
+
+
+
+    # Database Management Service Imports
+
+    voyage_embedder = providers.Singleton(VoyageEmbeddings, api_key=voyage_api_key)
+
 
     working_memory_service = providers.Singleton(
         WorkingMemoryService,
@@ -146,39 +205,26 @@ class Container(containers.DeclarativeContainer):
         )
 
 
-    graph_rag_agent = providers.Singleton(
-        GraphRAGAgent,
-        openai_chat_model=openai_chat_model,
-        anthropic_chat_model=anthropic_chat_model,
-        graph_rag_service=graph_rag_query_service
-    )
-    
-    news_agent = providers.Singleton(
-        NewsAgent,
-        news_api_key=news_api_key,
-        openai_chat_model=openai_chat_model,
-        anthropic_chat_model=anthropic_chat_model,
-    )
-    
-    deep_search_agent = providers.Singleton(
-        DeepSearchAgent,
-        perplexity_api_key=perplexity_api_key,
-        openai_chat_model=openai_chat_model,
-        anthropic_chat_model=anthropic_chat_model,
+
+    team_agent_class=providers.Singleton(
+        TeamAgent,
+            amadeus_agent_class =amadeus_agent_class, 
+            elevenlabs_agent_class=elevenlabs_agent_class , 
+            news_agent_class = news_agent_class, 
+            travel_research_agent_class = travel_research_agent_class,
+            google_maps_agent_class = google_maps_agent_class,
+            trip_advisor_agent_class = trip_advisor_agent_class, 
+            working_memory_service = working_memory_service, 
+            openai_chat_model = openai_chat_model, 
+            anthropic_chat_model = anthropic_chat_model, 
+            openai_client =  openai_client
     )
 
-    team_agent=providers.Singleton(
-        TeamAgent,
-        graph_rag_agent=graph_rag_agent,
-        news_api_agent=news_agent,
-        search_deepsearch_agent=deep_search_agent,
-        openai_chat_model=openai_chat_model,
-        anthropic_chat_model=anthropic_chat_model,
-        openai_client=openai_client,
-        working_memory_service=working_memory_service
-    )
+
+
+
     team_agent_service = providers.Singleton(
-        TeamAgentService, team_agent=team_agent,
+        TeamAgentService, team_agent_class=team_agent_class,
     )
 
 
@@ -190,9 +236,6 @@ class Container(containers.DeclarativeContainer):
     register_user_service=providers.Singleton(
         RegisterUser, db_pool=db_pool,
     )
-
-
-
 
 
 

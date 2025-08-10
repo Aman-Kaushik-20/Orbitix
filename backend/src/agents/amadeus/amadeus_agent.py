@@ -23,12 +23,12 @@ load_dotenv()
 class AmadeusAgent:
     """Unified agent for Amadeus API operations including airport search, flight search, and utilities."""
     
-    def __init__(self, openai_chat_model: OpenAIChat = None, anthropic_chat_model: Claude = None):
-        self.client = Client()
+    def __init__(self, amadeus_client:Client, openai_chat_model: OpenAIChat, anthropic_chat_model: Claude):
+        self.amadeus_client = amadeus_client
         self.cached_airports = {}
         
         # Use pre-initialized model if provided, otherwise create new one
-        model = openai_chat_model if openai_chat_model else OpenAIChat(id="gpt-4o", api_key=os.getenv('OPENAI_API_KEY'))
+        model = openai_chat_model
         
         self.agent = self._setup_agent(model)
     
@@ -44,7 +44,7 @@ class AmadeusAgent:
             list: List of airport dictionaries with name, iataCode, and cityName
         """
         try:
-            amadeus = self.client
+            amadeus = self.amadeus_client
             
             response = amadeus.reference_data.locations.get(
                 keyword=keyword,
@@ -84,7 +84,7 @@ class AmadeusAgent:
             dict: Detailed airport information or None if not found
         """
         try:
-            amadeus = self.client
+            amadeus = self.amadeus_client
             
             response = amadeus.reference_data.locations.get(
                 keyword=iata_code,
@@ -394,11 +394,8 @@ class AmadeusAgent:
                 - Flight details (prices, durations, airlines, segments)
                 - Alternative options when applicable
             """),
-            add_datetime_to_instructions=True,
-            stream_intermediate_steps=True,
             show_tool_calls=True,
             markdown=True,
-            stream=True
         )
     
     async def run_async(self, message: str) -> AsyncGenerator[str, None]:
@@ -413,7 +410,7 @@ class AmadeusAgent:
     def _search_single_date(self, origin, destination, departure_date, return_date, adults, max_results, quick_search):
         """Search flights for a single date."""
         try:
-            amadeus = self.client
+            amadeus = self.amadeus_client
             
             search_params = {
                 "originLocationCode": origin,

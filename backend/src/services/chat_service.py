@@ -8,10 +8,8 @@ from agno.models.message import Message
 from src.services.team_agent_service import TeamAgentService
 from src.services.working_memory_service import WorkingMemoryService
 from src.services.episodic_memory_service import EpisodicMemoryService
-from src.providers.team_provider import TeamAgent
+from src.teams.travel_agent_team import TeamAgent, ChatServiceResponseData
 from src.utils.schemas import HistoryTuple, History, history_tuple_to_message, ServiceResponse
-from src.providers.team_provider import ChatServiceResponseData
-# Container import removed to avoid circular dependency
 from agno.media import Image, Audio, Video, File
 from src.utils.schemas import History
 
@@ -27,7 +25,6 @@ class ChatServiceParams(BaseModel):
 class ChatServiceEventData(ChatServiceParams):
     task_id: str
 
-# ChatServiceResponseData moved to src.providers.team to avoid circular imports
     
 
 
