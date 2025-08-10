@@ -10,6 +10,46 @@ interface ChatInputProps {
   disabled?: boolean;
 }
 
+// Define the shape of the data returned from our new backend endpoint
+interface UploadResponse {
+  type: 'image' | 'pdf' | 'audio' | 'video' | 'file';
+  url: string;
+  filename: string;
+}
+
+// Updated helper function to handle multiple files in a single request
+const uploadFiles = async (files: File[]): Promise<UploadResponse[]> => {
+  const formData = new FormData();
+  // Append all files under the key 'files', which the backend expects
+  files.forEach(file => {
+    formData.append('files', file);
+  });
+
+  // IMPORTANT: Replace with your actual backend URL if it differs
+  const backendUrl = 'http://127.0.0.1:8080/api/v1/upload';
+
+  try {
+    const response = await fetch(backendUrl, {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'File upload failed');
+    }
+
+    const result = await response.json();
+    // The backend now returns { uploaded_files: [...] }
+    return result.uploaded_files;
+  } catch (error) {
+    console.error('File upload process failed:', error);
+    alert('An error occurred during file upload. Please try again.');
+    throw error;
+  }
+};
+
+
 export const ChatInput: React.FC<ChatInputProps> = ({ 
   onSend, 
   isStreaming, 
@@ -22,7 +62,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || isStreaming || disabled) return;
+    if ((!message.trim() && attachments.length === 0) || isStreaming || disabled) return;
 
     onSend(message.trim(), attachments);
     setMessage('');
@@ -36,42 +76,54 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    
-    files.forEach(file => {
-      // Validate file size (10MB limit)
-      if (file.size > 10 * 1024 * 1024) {
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    if (!selectedFiles.length) return;
+
+    // 1. Validate all files before uploading
+    const validFiles = selectedFiles.filter(file => {
+      if (file.size > 10 * 1024 * 1024) { // 10MB limit
         alert(`File ${file.name} is too large. Maximum size is 10MB.`);
-        return;
+        return false;
       }
-
-      // Validate file type
       const allowedTypes = ['image/*', 'application/pdf'];
-      const isValidType = allowedTypes.some(type => {
-        if (type === 'image/*') {
-          return file.type.startsWith('image/');
-        }
-        return file.type === type;
-      });
-
+      const isValidType = allowedTypes.some(type =>
+        type === 'image/*' ? file.type.startsWith('image/') : file.type === type
+      );
       if (!isValidType) {
-        alert(`File type ${file.type} is not supported. Please upload images or PDFs only.`);
-        return;
+        alert(`File type for ${file.name} is not supported. Please upload images or PDFs only.`);
+        return false;
       }
-
-      const attachment: Attachment = {
-        id: crypto.randomUUID(),
-        name: file.name,
-        type: file.type.startsWith('image/') ? 'image' : 'pdf',
-        size: file.size,
-        url: URL.createObjectURL(file),
-      };
-
-      setAttachments(prev => [...prev, attachment]);
+      return true;
     });
 
-    // Reset file input
+    if (validFiles.length === 0) return;
+
+    try {
+      // 2. Send all valid files in a single API call
+      const uploadedFileData = await uploadFiles(validFiles);
+
+      // 3. Map the response from the backend to the frontend's Attachment type
+      const newAttachments = uploadedFileData.map((uploadedFile): Attachment => {
+        const originalFile = validFiles.find(f => f.name === uploadedFile.filename);
+        return {
+          id: crypto.randomUUID(),
+          name: uploadedFile.filename,
+          type: uploadedFile.type === 'image' ? 'image' : 'pdf', // Adjust as needed
+          size: originalFile?.size || 0,
+          url: uploadedFile.url,
+        };
+      });
+
+      // 4. Update the state with the new attachments
+      setAttachments(prev => [...prev, ...newAttachments]);
+
+    } catch (error) {
+      // The uploadFiles function already handles showing an alert to the user
+      console.error("Could not upload files.", error);
+    }
+
+    // Reset file input so the user can select the same file again
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -156,7 +208,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         {/* Send button */}
         <button
           type="submit"
-          disabled={!message.trim() || isStreaming || disabled}
+          disabled={(!message.trim() && attachments.length === 0) || isStreaming || disabled}
           className={cn(
             'flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground',
             'hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary',

@@ -13,6 +13,7 @@ from fastapi import FastAPI, status as http_status, File, UploadFile, HTTPExcept
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from loguru import logger
+from typing import List
 
 from src.core.container import Container
 
@@ -87,55 +88,71 @@ app.add_middleware(
 
 
 @app.post(f"{API_PREFIX}/upload", tags=["File Upload"])
-async def handle_file_upload(file: UploadFile = File(...)):
+async def handle_file_upload(files: List[UploadFile] = File(...)):
     """
-    Receives a file as multipart/form-data and uploads it to GCP.
+    Receives one or more files as multipart/form-data and uploads them to GCP.
 
     Args:
-        file (UploadFile): The file sent from the frontend.
+        files (List[UploadFile]): A list of files sent from the frontend.
 
     Returns:
-        JSONResponse: A JSON object with the uploaded file's URL.
+        JSONResponse: A JSON object containing a list of uploaded file details.
+                      Each item in the list is a dict: {'type': str, 'url': str}
     """
-    try:
-        # 1. Read the file content from the UploadFile object
-        file_bytes = await file.read()
+    uploaded_files_data = []
 
-        # 2. Extract the file extension from the filename
+    for file in files:
         try:
-            extension = file.filename.split('.')[-1].lower()
-        except IndexError:
-            raise HTTPException(status_code=400, detail="Invalid filename: no extension found.")
+            # 1. Read the file content from the UploadFile object
+            file_bytes = await file.read()
 
-        # Optional: Validate the file extension against your supported types
-        supported_extensions = ["jpeg", "jpg", "png", "mp3", "mp4", "pdf", "webp"]
-        if extension not in supported_extensions:
+            # 2. Extract the file extension from the filename
+            try:
+                extension = file.filename.split('.')[-1].lower()
+            except IndexError:
+                # Skip this file if it has no extension, or handle as an error
+                logger.warning(f"Skipping file '{file.filename}' due to missing extension.")
+                continue
+
+            # 3. Determine media type based on file content type
+            content_type = file.content_type
+            media_type = "file"  # Default type
+            if 'image' in content_type:
+                media_type = 'image'
+            elif 'audio' in content_type:
+                media_type = 'audio'
+            elif 'video' in content_type:
+                media_type = 'video'
+            elif 'pdf' in content_type:
+                # Your service seems to handle pdfs as 'file' type.
+                # If you have a specific 'pdf' type, change this.
+                media_type = 'file'
+
+
+            # 4. Call your existing upload function
+            logger.info(f"Uploading file '{file.filename}' to GCP...")
+            public_url = upload_to_gcp(data=file_bytes, extension=extension)
+
+            # 5. Append the result to our list
+            uploaded_files_data.append({
+                "type": media_type,
+                "url": public_url,
+                "filename": file.filename,  # Add this line
+            })
+
+        except Exception as e:
+            logger.error(f"Failed to upload file '{file.filename}': {e}", exc_info=True)
+            # Depending on desired behavior, you could continue or raise an error for the whole batch
             raise HTTPException(
-                status_code=400,
-                detail=f"File type '{extension}' not supported."
+                status_code=500,
+                detail=f"An error occurred during the upload of '{file.filename}': {str(e)}"
             )
 
-        # 3. Call your existing upload function with the file bytes and extension
-        logger.info(f"Uploading file '{file.filename}' to GCP...")
-        public_url = upload_to_gcp(data=file_bytes, extension=extension)
-
-        # 4. Return a success response with the URL
-        return JSONResponse(
-            status_code=200,
-            content={
-                "message": "File uploaded successfully",
-                "filename": file.filename,
-                "url": public_url,
-            },
-        )
-
-    except Exception as e:
-        # If anything goes wrong during the upload, return a server error
-        logger.error(f"An error occurred during file upload: {e}", exc_info=True)
-        raise HTTPException(
-            status_code=500,
-            detail=f"An unexpected error occurred during file upload: {str(e)}"
-        )
+    # 6. Return a success response with the list of uploaded file data
+    return JSONResponse(
+        status_code=200,
+        content={"uploaded_files": uploaded_files_data},
+    )
 
 
 app.include_router(
