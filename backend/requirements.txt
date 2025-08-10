@@ -27,3 +27,4 @@
 
     googlemaps 
     google-maps-places
+    elevenlabs

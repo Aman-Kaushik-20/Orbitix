@@ -9,7 +9,7 @@ import src.services.working_memory_service as working_memory_service
 import src.services.episodic_memory_service as episodic_memory_service
 
 
-from fastapi import FastAPI, status as http_status
+from fastapi import FastAPI, status as http_status, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -22,6 +22,7 @@ from src.api.user_registration import user_registration_router
 from src.api.chat_streaming import chat_streaming_router
 from src.api.memory_management import memory_management_router
 from src.api.health import health_router
+from src.utils.gcs_uploads import upload_to_gcp
 
 
 # Configuration
@@ -84,6 +85,57 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.post(f"{API_PREFIX}/upload", tags=["File Upload"])
+async def handle_file_upload(file: UploadFile = File(...)):
+    """
+    Receives a file as multipart/form-data and uploads it to GCP.
+
+    Args:
+        file (UploadFile): The file sent from the frontend.
+
+    Returns:
+        JSONResponse: A JSON object with the uploaded file's URL.
+    """
+    try:
+        # 1. Read the file content from the UploadFile object
+        file_bytes = await file.read()
+
+        # 2. Extract the file extension from the filename
+        try:
+            extension = file.filename.split('.')[-1].lower()
+        except IndexError:
+            raise HTTPException(status_code=400, detail="Invalid filename: no extension found.")
+
+        # Optional: Validate the file extension against your supported types
+        supported_extensions = ["jpeg", "jpg", "png", "mp3", "mp4", "pdf", "webp"]
+        if extension not in supported_extensions:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File type '{extension}' not supported."
+            )
+
+        # 3. Call your existing upload function with the file bytes and extension
+        logger.info(f"Uploading file '{file.filename}' to GCP...")
+        public_url = upload_to_gcp(data=file_bytes, extension=extension)
+
+        # 4. Return a success response with the URL
+        return JSONResponse(
+            status_code=200,
+            content={
+                "message": "File uploaded successfully",
+                "filename": file.filename,
+                "url": public_url,
+            },
+        )
+
+    except Exception as e:
+        # If anything goes wrong during the upload, return a server error
+        logger.error(f"An error occurred during file upload: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"An unexpected error occurred during file upload: {str(e)}"
+        )
 
 
 app.include_router(
