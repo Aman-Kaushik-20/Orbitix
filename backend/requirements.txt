@@ -13,6 +13,7 @@ uvicorn
 newsapi-python
 asyncpg
 loguru
+filetype
 
 googlemaps 
 elevenlabs
