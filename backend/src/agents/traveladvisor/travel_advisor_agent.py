@@ -536,38 +536,38 @@ class TripAdvisorAgent:
 
 
 
-# Run the example
-if __name__ == "__main__":
-    # Example usage function
-    async def example_usage():
-        """Example function demonstrating the agentic TripAdvisor client usage."""
-        try:
-            # Initialize the agent
-            trip_agent = TripAdvisorAgent()
+# # Run the example
+# if __name__ == "__main__":
+#     # Example usage function
+#     async def example_usage():
+#         """Example function demonstrating the agentic TripAdvisor client usage."""
+#         try:
+#             # Initialize the agent
+#             trip_agent = TripAdvisorAgent()
 
-            # Example queries using natural language
-            queries = [
-                "Find me the best hotels in Mumbai",
-                # "I'm looking for great restaurants in Paris. Show me top rated ones with their details",
-                # "Plan a complete travel guide for New York with hotels and restaurants",
-                # "What are some luxury hotels in Dubai with spa facilities?",
-                # "Find budget-friendly restaurants in Bangkok with good local cuisine"
-            ]
+#             # Example queries using natural language
+#             queries = [
+#                 "Find me the best hotels in Mumbai",
+#                 # "I'm looking for great restaurants in Paris. Show me top rated ones with their details",
+#                 # "Plan a complete travel guide for New York with hotels and restaurants",
+#                 # "What are some luxury hotels in Dubai with spa facilities?",
+#                 # "Find budget-friendly restaurants in Bangkok with good local cuisine"
+#             ]
 
-            for query in queries:
-                print(f"\n{'='*50}")
-                print(f"QUERY: {query}")
-                print(f"{'='*50}")
+#             for query in queries:
+#                 print(f"\n{'='*50}")
+#                 print(f"QUERY: {query}")
+#                 print(f"{'='*50}")
                 
-                response = await trip_agent.ask(query)
-                print(response)
+#                 response = await trip_agent.ask(query)
+#                 print(response)
                 
-                # Wait between queries to avoid rate limits
-                await asyncio.sleep(2)
+#                 # Wait between queries to avoid rate limits
+#                 await asyncio.sleep(2)
 
-        except ValueError as e:
-            print(f"Configuration Error: {e}")
-        except Exception as e:
-            print(f"Unexpected Error: {e}")
+#         except ValueError as e:
+#             print(f"Configuration Error: {e}")
+#         except Exception as e:
+#             print(f"Unexpected Error: {e}")
 
-    asyncio.run(example_usage())
+#     asyncio.run(example_usage())

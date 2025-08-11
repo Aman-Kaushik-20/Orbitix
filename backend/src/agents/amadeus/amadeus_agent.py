@@ -748,28 +748,28 @@ except ImportError:
         ANY = None
 
 
-if __name__ == "__main__":
-    # Example usage of the consolidated AmadeusAgent
-    agent_class = AmadeusAgent()
+# if __name__ == "__main__":
+#     # Example usage of the consolidated AmadeusAgent
+#     agent_class = AmadeusAgent()
     
-    # # Quick flight search
-    # results = agent.search_flights("PAR", "NYC", "tomorrow", quick_search=True)
-    # print(f'\n\nQuickSearch Results:\n{results}\n\n')
+#     # # Quick flight search
+#     # results = agent.search_flights("PAR", "NYC", "tomorrow", quick_search=True)
+#     # print(f'\n\nQuickSearch Results:\n{results}\n\n')
     
-    # # Find cheapest flights over 7 days
-    # cheapest = agent.search_flights("PAR", "NYC", "2025-12-01", find_cheapest=True, date_range_days=7)
-    # print(f'\n\nCheapSearch Results:\n{cheapest}\n\n')
+#     # # Find cheapest flights over 7 days
+#     # cheapest = agent.search_flights("PAR", "NYC", "2025-12-01", find_cheapest=True, date_range_days=7)
+#     # print(f'\n\nCheapSearch Results:\n{cheapest}\n\n')
 
-    # # Compare multiple routes
-    # comparison = agent.compare_routes(["PAR", "CDG"], ["NYC", "JFK"], "2025-12-01")
-    # print(f'\n\nComparisionSearch Results:\n{comparison}\n\n')
+#     # # Compare multiple routes
+#     # comparison = agent.compare_routes(["PAR", "CDG"], ["NYC", "JFK"], "2025-12-01")
+#     # print(f'\n\nComparisionSearch Results:\n{comparison}\n\n')
  
-    # # Search airports and get alternatives
-    # alternatives = agent.suggest_alternative_airports("Paris")
-    # print(f'\n\nAlternativesSearch Results:\n{alternatives}\n\n')
+#     # # Search airports and get alternatives
+#     # alternatives = agent.suggest_alternative_airports("Paris")
+#     # print(f'\n\nAlternativesSearch Results:\n{alternatives}\n\n')
 
-    agent : Agent = agent_class.agent
+#     agent : Agent = agent_class.agent
 
-    agent.print_response('Can you find me availabe flights from New York To Sanfrancisco for 1 adult on 10-08-2025 ??')
+#     agent.print_response('Can you find me availabe flights from New York To Sanfrancisco for 1 adult on 10-08-2025 ??')
 
     

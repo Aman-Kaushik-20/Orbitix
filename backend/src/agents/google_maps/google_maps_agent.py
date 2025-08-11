@@ -205,40 +205,40 @@ class GoogleMapsAgent:
         return self.agent.run(message)
 
 # Example Usage:
-if __name__ == '__main__':
-    from agno.models.openai import OpenAIChat
+# if __name__ == '__main__':
+#     from agno.models.openai import OpenAIChat
     
-    async def main():
-        """Asynchronous function to set up and run the agent."""
-        gmaps_key = os.getenv("GOOGLE_MAPS_API_KEY")
-        perplexity_key = os.getenv("PERPLEXITY_API_KEY")
+#     async def main():
+#         """Asynchronous function to set up and run the agent."""
+#         gmaps_key = os.getenv("GOOGLE_MAPS_API_KEY")
+#         perplexity_key = os.getenv("PERPLEXITY_API_KEY")
 
-        if not gmaps_key or not perplexity_key:
-            print("Error: GOOGLE_MAPS_API_KEY and PERPLEXITY_API_KEY must be set in your .env file.")
-            return
+#         if not gmaps_key or not perplexity_key:
+#             print("Error: GOOGLE_MAPS_API_KEY and PERPLEXITY_API_KEY must be set in your .env file.")
+#             return
 
-        chat_model = OpenAIChat(id="gpt-4o")
-        maps_agent = GoogleMapsAgent(
-            google_maps_api_key=gmaps_key,
-            perplexity_api_key=perplexity_key,
-            chat_model=chat_model
-        )
+#         chat_model = OpenAIChat(id="gpt-4o")
+#         maps_agent = GoogleMapsAgent(
+#             google_maps_api_key=gmaps_key,
+#             perplexity_api_key=perplexity_key,
+#             chat_model=chat_model
+#         )
         
-        print("Running Google Maps Agent...")
-        query = "I need to travel from the Eiffel Tower to the Louvre Museum in Paris. tell me cost for it with time and distance"
+#         print("Running Google Maps Agent...")
+#         query = "I need to travel from the Eiffel Tower to the Louvre Museum in Paris. tell me cost for it with time and distance"
         
-        print(f"\n--- User Query ---\n{query}")
-        print("\n--- Agent Response ---")
+#         print(f"\n--- User Query ---\n{query}")
+#         print("\n--- Agent Response ---")
         
-        try:
-            async for chunk in maps_agent.run_async(query):
-                print(chunk, end="", flush=True)
-        except Exception as e:
-            print(f"\nAn error occurred during agent execution: {e}")
+#         try:
+#             async for chunk in maps_agent.run_async(query):
+#                 print(chunk, end="", flush=True)
+#         except Exception as e:
+#             print(f"\nAn error occurred during agent execution: {e}")
         
-        print("\n\n--- Agent Run Finished ---")
+#         print("\n\n--- Agent Run Finished ---")
 
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\nAgent run interrupted by user.")
+#     try:
+#         asyncio.run(main())
+#     except KeyboardInterrupt:
+#         print("\nAgent run interrupted by user.")

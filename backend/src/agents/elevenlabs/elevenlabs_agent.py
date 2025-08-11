@@ -126,32 +126,32 @@ class ElevenLabsAgent:
 
 
 
-if __name__ == "__main__":
-    try:
+# if __name__ == "__main__":
+#     try:
 
-        async def main():
-            """Asynchronous function to set up and run the agent."""
-            perplexity_key = os.getenv("PERPLEXITY_API_KEY")
-            if not perplexity_key:
-                print("Error: PERPLEXITY_API_KEY not found in .env file.")
-                return
+#         async def main():
+#             """Asynchronous function to set up and run the agent."""
+#             perplexity_key = os.getenv("PERPLEXITY_API_KEY")
+#             if not perplexity_key:
+#                 print("Error: PERPLEXITY_API_KEY not found in .env file.")
+#                 return
 
-            agent_instance = ElevenLabsAgent(perplexity_api_key=perplexity_key)
+#             agent_instance = ElevenLabsAgent(perplexity_api_key=perplexity_key)
             
-            prompt = "Generate a small text to speech audio for alexander the great..."
+#             prompt = "Generate a small text to speech audio for alexander the great..."
 
-            print(f"--- User Prompt ---\n{prompt}\n")
-            print("--- Agent Running ---")
+#             print(f"--- User Prompt ---\n{prompt}\n")
+#             print("--- Agent Running ---")
 
-            try:
-                final_response = await agent_instance.run_async(prompt)
-                print("\n--- Agent Response ---")
-                print(final_response)
-            except Exception as e:
-                print(f"\nAn error occurred during agent execution: {e}")
-            finally:
-                print("\n--- Agent Run Finished ---")
+#             try:
+#                 final_response = await agent_instance.run_async(prompt)
+#                 print("\n--- Agent Response ---")
+#                 print(final_response)
+#             except Exception as e:
+#                 print(f"\nAn error occurred during agent execution: {e}")
+#             finally:
+#                 print("\n--- Agent Run Finished ---")
 
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\nAgent run interrupted by user.")
+#         asyncio.run(main())
+#     except KeyboardInterrupt:
+#         print("\nAgent run interrupted by user.")

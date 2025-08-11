@@ -273,36 +273,36 @@ class AudioTourAgent:
 
 
 
-if __name__ == "__main__":
-    try:
-        async def main():
-            """Asynchronous function to set up and run the agent."""
-            agent_instance = AudioTourAgent()
+# if __name__ == "__main__":
+#     try:
+#         async def main():
+#             """Asynchronous function to set up and run the agent."""
+#             agent_instance = AudioTourAgent()
             
-            prompt = "Generate an audio tour for the landmark in the image."
-            attachments = [
-                {
-                    'type': 'image',
-                    'url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg'
-                },
-                {
-                    'type': 'file',
-                    'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
-                }
-            ]
+#             prompt = "Generate an audio tour for the landmark in the image."
+#             attachments = [
+#                 {
+#                     'type': 'image',
+#                     'url': 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/800px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg'
+#                 },
+#                 {
+#                     'type': 'file',
+#                     'url': 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf'
+#                 }
+#             ]
 
-            print(f"--- User Prompt ---\n{prompt}\n")
-            print(f"--- Attachments ---\n{attachments}\n")
-            print("--- Agent Running ---")
+#             print(f"--- User Prompt ---\n{prompt}\n")
+#             print(f"--- Attachments ---\n{attachments}\n")
+#             print("--- Agent Running ---")
 
-            try:
-                async for response_part in agent_instance.run_async(prompt, attachments=attachments):
-                    print(f"\n--- Agent Event ---\n{response_part}")
-            except Exception as e:
-                print(f"\nAn error occurred during agent execution: {e}")
-            finally:
-                print("\n--- Agent Run Finished ---")
+#             try:
+#                 async for response_part in agent_instance.run_async(prompt, attachments=attachments):
+#                     print(f"\n--- Agent Event ---\n{response_part}")
+#             except Exception as e:
+#                 print(f"\nAn error occurred during agent execution: {e}")
+#             finally:
+#                 print("\n--- Agent Run Finished ---")
 
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        print("\nAgent run interrupted by user.")
+#         asyncio.run(main())
+#     except KeyboardInterrupt:
+#         print("\nAgent run interrupted by user.")

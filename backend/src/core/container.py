@@ -175,7 +175,7 @@ class Container(containers.DeclarativeContainer):
         GoogleMapsAgent,
         google_maps_api_key=google_maps_api_key,
         perplexity_api_key=perplexity_api_key,
-        chat_model=openai_chat_model,
+        openai_chat_model=openai_chat_model,
     )
 
     trip_advisor_agent_class = providers.Singleton(
