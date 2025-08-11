@@ -1,7 +1,7 @@
 # Extras 
-ipykernel
-neo4j_graphrag
-neo4j
+# ipykernel
+# neo4j_graphrag
+# neo4j
 voyageai
 # pandas
 
@@ -12,7 +12,7 @@ requests
 # PyMuPDF
 openai
 agno
-ag-ui-protocol
+# ag-ui-protocol
 dependency_injector
 loguru
 fastapi
