@@ -69,6 +69,7 @@ class TravelResearchAgent:
                 include_citations: Whether to include source citations.
                 focus_areas: Specific aspects of the trip to focus on (e.g., "food", "history", "adventure").
             """
+            deepsearch = False
             try:
                 if not perplexity_api_key:
                     return {

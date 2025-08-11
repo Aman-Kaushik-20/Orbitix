@@ -25,7 +25,7 @@ PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
 
 
 class GoogleMapsAgent:
-    def __init__(self, google_maps_api_key: str, perplexity_api_key: str, chat_model: OpenAIChat):
+    def __init__(self, google_maps_api_key: str, perplexity_api_key: str, openai_chat_model: OpenAIChat):
         """
         Initializes the GoogleMapsAgent.
 
@@ -42,7 +42,7 @@ class GoogleMapsAgent:
         self.gmaps_client = googlemaps.Client(key=google_maps_api_key)
         self.agent = self.setup_agent(
             perplexity_api_key=perplexity_api_key,
-            chat_model=chat_model
+            chat_model=openai_chat_model
         )
 
     def setup_agent(self, perplexity_api_key: str, chat_model: OpenAIChat) -> Agent:

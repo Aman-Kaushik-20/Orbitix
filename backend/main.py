@@ -17,12 +17,13 @@ from typing import List
 
 from src.core.container import Container
 
-from src.api import development_stream, user_registration, chat_streaming, memory_management, health
+from src.api import development_stream, user_registration, chat_streaming, memory_management, health, audio_tour_guide_api
 from src.api.development_stream import development_stream_router
 from src.api.user_registration import user_registration_router
 from src.api.chat_streaming import chat_streaming_router
 from src.api.memory_management import memory_management_router
 from src.api.health import health_router
+from src.api.audio_tour_guide_api import gemini_audio_agent_router
 from src.utils.gcs_uploads import upload_to_gcp
 
 
@@ -56,7 +57,8 @@ async def lifespan(app: FastAPI):
         user_registration, 
         chat_streaming, 
         memory_management,
-        health
+        health,
+        audio_tour_guide_api
     ])
     
     logger.info("✅ API startup completed")
@@ -175,6 +177,12 @@ app.include_router(
     memory_management_router, 
     prefix=f"{API_PREFIX}/update-create/update_session_data",
     tags=["Sessions"],
+)
+
+app.include_router(
+    gemini_audio_agent_router,
+    prefix=f"{API_PREFIX}/audio-tour",
+    tags=["Audio Generation"]
 )
 
 # Include health endpoints
