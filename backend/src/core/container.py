@@ -1,14 +1,9 @@
 # Third Party Dependency Imports
 from dependency_injector import containers, providers
 import asyncpg
-# Neo4j imports (optional for deployment)
-# try:
-#     import neo4j
-#     from neo4j_graphrag.llm import OpenAILLM
-#     from neo4j._async.driver import AsyncGraphDatabase
-#     NEO4J_AVAILABLE = True
-# except ImportError:
-#     NEO4J_AVAILABLE = False
+import neo4j
+from neo4j_graphrag.llm import OpenAILLM
+from neo4j._async.driver import AsyncGraphDatabase
 from openai import OpenAI
 from supabase import create_async_client, AsyncClient
 from amadeus import Client as AmadeusClient
@@ -76,9 +71,9 @@ class Container(containers.DeclarativeContainer):
     anthropic_api_key=os.getenv('CLAUDE_API_KEY')
     perplexity_api_key = os.getenv('PERPLEXITY_API_KEY')
     news_api_key = os.getenv('NEWS_API_KEY')
-    # neo4j_uri = os.getenv('NEO4J_URI')
-    # neo4j_username = os.getenv('NEO4J_USERNAME')
-    # neo4j_password = os.getenv('NEO4J_PASSWORD')
+    neo4j_uri = os.getenv('NEO4J_URI')
+    neo4j_username = os.getenv('NEO4J_USERNAME')
+    neo4j_password = os.getenv('NEO4J_PASSWORD')
     amadeus_client_id = os.getenv('AMADEUS_CLIENT_ID')
     amadeus_client_secret = os.getenv('AMADEUS_CLIENT_SECRET')
     supabase_url  = os.getenv("SUPABASE_URL")
@@ -95,17 +90,13 @@ class Container(containers.DeclarativeContainer):
     )
 
 
-    # # Third Party Libraries llm abstraction (Neo4j - optional)
-    # if NEO4J_AVAILABLE:
-    #     neo4j_ex_llm = providers.Singleton(
-    #         OpenAILLM,
-    #         model_name="gpt-4o-mini",
-    #         model_params={
-    #             "temperature": 0  # turning temperature down for more deterministic results
-    #         }
-    #     )
-    # else:
-    #     neo4j_ex_llm = None
+    neo4j_ex_llm = providers.Singleton(
+        OpenAILLM,
+        model_name="gpt-4o-mini",
+        model_params={
+            "temperature": 0  # turning temperature down for more deterministic results
+        }
+    )
 
     amadeus_client=AmadeusClient(
         client_id=amadeus_client_id,
@@ -131,16 +122,12 @@ class Container(containers.DeclarativeContainer):
 
     # Database Drivers and Clients
 
-    # if NEO4J_AVAILABLE:
-    #     neo4j_driver = providers.Singleton(neo4j.GraphDatabase.driver, neo4j_uri, auth=(neo4j_username, neo4j_password))
-    #     neo4j_async_driver = providers.Singleton(
-    #         AsyncGraphDatabase.driver,
-    #         neo4j_uri,
-    #         auth=(neo4j_username, neo4j_password)
-    #     )
-    # else:
-    #     neo4j_driver = None
-    #     neo4j_async_driver = None
+    neo4j_driver = providers.Singleton(neo4j.GraphDatabase.driver, neo4j_uri, auth=(neo4j_username, neo4j_password))
+    neo4j_async_driver = providers.Singleton(
+        AsyncGraphDatabase.driver,
+        neo4j_uri,
+        auth=(neo4j_username, neo4j_password)
+    )
 
     supabase_client = providers.Resource(
         _init_supabase_client,
