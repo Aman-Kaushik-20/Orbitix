@@ -55,9 +55,9 @@ class ElevenLabsTools(Toolkit):
         self.model_id = model_id
         self.output_format = output_format
 
-        if self.target_directory:
-            target_path = Path(self.target_directory)
-            target_path.mkdir(parents=True, exist_ok=True)
+        # if self.target_directory:
+        #     target_path = Path(self.target_directory)
+            # target_path.mkdir(parents=True, exist_ok=True)
 
         self.eleven_labs_client = ElevenLabs(api_key=self.api_key)
 

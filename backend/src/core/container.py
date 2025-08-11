@@ -17,6 +17,7 @@ from src.agents.amadeus.amadeus_agent import AmadeusAgent
 from src.agents.elevenlabs.elevenlabs_agent import ElevenLabsAgent
 from src.agents.google_maps.google_maps_agent import GoogleMapsAgent
 from src.agents.traveladvisor.travel_advisor_agent import TripAdvisorAgent
+from src.agents.elevenlabs.audio_tour_agent import AudioTourAgent
 
 #teams
 from src.teams.travel_agent_team import TeamAgent
@@ -80,6 +81,7 @@ class Container(containers.DeclarativeContainer):
     postgres_uri = os.getenv("POSTGRES_URI")
     google_maps_api_key = os.getenv('GOOGLE_MAPS_API_KEY')
     trip_advisor_api_key = os.getenv('TRIPADVISOR_API_KEY')
+    gemini_api_key = os.getenv('GOOGLE_API_KEY')
 
     # LLM Clients
     openai_client = providers.Singleton(
@@ -99,7 +101,7 @@ class Container(containers.DeclarativeContainer):
 
     amadeus_client=AmadeusClient(
         client_id=amadeus_client_id,
-        amadeus_client_secret=amadeus_client_secret
+        client_secret=amadeus_client_secret
     )
 
     openai_chat_model = providers.Singleton(
@@ -237,6 +239,10 @@ class Container(containers.DeclarativeContainer):
         RegisterUser, db_pool=db_pool,
     )
 
+    audio_tour_agent_class = providers.Singleton(
+        AudioTourAgent,
+        gemini_api_key=gemini_api_key,
+    )
 
 
 
