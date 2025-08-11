@@ -1,8 +1,10 @@
 export interface Message {
   id: string;
+  chat_id: string;
+  user_id: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
-  timestamp: Date;
+  created_at: string;
   attachments?: Attachment[];
   isStreaming?: boolean;
   streamType?: 'reasoning' | 'response' | 'error' | 'end';

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Plus, MessageSquare, Trash2, Menu, X } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, Menu, X, LogOut } from 'lucide-react';
+import { supabase } from '../utils/supabase';
 import { ChatPreview } from '../types';
 import { cn } from '../utils/cn';
 
@@ -79,6 +80,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
         {/* Chat list */}
         <div className="flex-1 overflow-y-auto">
+          <div className="p-2">
+            <button
+              onClick={async () => {
+                try {
+                  await supabase.auth.signOut();
+                } finally {
+                  try { sessionStorage.removeItem('justLoggedIn'); } catch {}
+                  window.location.assign('/');
+                }
+              }}
+              className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-accent transition-colors"
+            >
+              <LogOut className="w-5 h-5" />
+              Logout
+            </button>
+          </div>
           {chatHistory.length === 0 ? (
             <div className="p-4 text-center text-muted-foreground">
               <MessageSquare className="w-12 h-12 mx-auto mb-2 opacity-50" />

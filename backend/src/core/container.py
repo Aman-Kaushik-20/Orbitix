@@ -99,7 +99,7 @@ class Container(containers.DeclarativeContainer):
 
     amadeus_client=AmadeusClient(
         client_id=amadeus_client_id,
-        amadeus_client_secret=amadeus_client_secret
+         client_secret=amadeus_client_secret
     )
 
     openai_chat_model = providers.Singleton(
