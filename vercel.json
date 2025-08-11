@@ -1,0 +1,27 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "backend/main.py",
+        "use": "@vercel/python"
+      },
+      {
+        "src": "frontend/package.json",
+        "use": "@vercel/static-build",
+        "config": {
+          "installCommand": "npm install",
+          "buildCommand": "npm run build"
+        }
+      }
+    ],
+    "rewrites": [
+      {
+        "source": "/api/v1/(.*)",
+        "destination": "/backend/main.py"
+      },
+      {
+        "source": "/(.*)",
+        "destination": "/frontend/build/index.html"
+      }
+    ]
+  }
