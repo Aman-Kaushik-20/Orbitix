@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { Color, Scene, Fog, PerspectiveCamera, Vector3 } from "three";
+import { Color, Scene, Fog, PerspectiveCamera, Vector3, Group } from "three";
 
 import ThreeGlobe from "three-globe";
 
@@ -122,7 +122,6 @@ interface WorldProps {
 
 
 
-let numbersOfRings = [0];
 
 
 
@@ -130,7 +129,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
 
   const globeRef = useRef<ThreeGlobe | null>(null);
 
-  const groupRef = useRef();
+  const groupRef = useRef<Group>(null);
 
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -248,7 +247,6 @@ export function Globe({ globeConfig, data }: WorldProps) {
 
       const arc = arcs[i];
 
-      const rgb = hexToRgb(arc.color) as { r: number; g: number; b: number };
 
       points.push({
 
@@ -434,7 +432,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
 
       const ringsData = data
 
-        .filter((d, i) => newNumbersOfRings.includes(i))
+        .filter((_d, i) => newNumbersOfRings.includes(i))
 
         .map((d) => ({
 
@@ -570,7 +568,7 @@ export function hexToRgb(hex: string) {
 
   var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
 
-  hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+  hex = hex.replace(shorthandRegex, function (_m, r, g, b) {
 
     return r + r + g + g + b + b;
 

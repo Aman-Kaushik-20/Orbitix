@@ -1,5 +1,5 @@
 "use client";
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import HeroHeading from "./HeroHeading";
 

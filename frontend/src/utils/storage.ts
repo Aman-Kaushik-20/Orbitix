@@ -36,7 +36,7 @@ class ChatStorage {
        
         if (!db.objectStoreNames.contains('messages')) {
           const messageStore = db.createObjectStore('messages');
-          messageStore.createIndex('by-chat', 'chatId');
+          messageStore.createIndex('by-chat', 'chat_id');
         }
       },
     });
@@ -90,7 +90,7 @@ class ChatStorage {
     if (!this.db) await this.init();
     
     
-    await this.db!.put('messages', { ...message, chatId }, message.id);
+    await this.db!.put('messages', { ...message, chat_id: chatId }, message.id);
     
     
     const chat = await this.getChat(chatId);

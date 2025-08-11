@@ -1,4 +1,3 @@
-import React from "react";
 import { Cover } from "../ui/cover";
 
 export default function HeroHeading() {

@@ -2,12 +2,9 @@ import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Message, Attachment } from '../types';
 import { FileText, Image, File } from 'lucide-react';
 import { cn } from '../utils/cn';
-import { ThinkingIndicator } from './ThinkingIndicator';
 import CodeBlock from './CodeBlock';
 
 interface ChatMessageProps {
