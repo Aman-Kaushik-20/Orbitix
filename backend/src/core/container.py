@@ -173,9 +173,9 @@ class Container(containers.DeclarativeContainer):
 
     google_maps_agent_class = providers.Singleton(
         GoogleMapsAgent,
-        google_maps_api_key = google_maps_api_key, 
-        perplexity_api_key = perplexity_api_key, 
-        openai_chat_model = openai_chat_model
+        google_maps_api_key=google_maps_api_key,
+        perplexity_api_key=perplexity_api_key,
+        chat_model=openai_chat_model,
     )
 
     trip_advisor_agent_class = providers.Singleton(
@@ -193,7 +193,7 @@ class Container(containers.DeclarativeContainer):
     working_memory_service = providers.Singleton(
         WorkingMemoryService,
         db_pool=db_pool,
-        anthropic_chat_model = anthropic_chat_model
+        anthropic_chat_model=anthropic_chat_model
         
     )
 

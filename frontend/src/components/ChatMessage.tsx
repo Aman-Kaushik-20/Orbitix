@@ -7,7 +7,7 @@ import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Message, Attachment } from '../types';
 import { FileText, Image, File } from 'lucide-react';
 import { cn } from '../utils/cn';
-import ThinkingProcess from './Thinking';
+import { ThinkingIndicator } from './ThinkingIndicator';
 import CodeBlock from './CodeBlock';
 
 interface ChatMessageProps {
@@ -81,14 +81,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage
       >
         {/* Message content */}
         <div className="prose prose-sm max-w-none dark:prose-invert">
-          {isAssistant && message.reasoning_content ? (
-            <ThinkingProcess
-              steps={[
-                { type: 'reasoning', content: message.reasoning_content, sequence: 1, task_id: '' },
-                { type: 'response', content: message.content, sequence: 2, task_id: '' },
-              ]}
-            />
-          ) : isAssistant ? (
+          {isAssistant ? (
             <ReactMarkdown
               rehypePlugins={[rehypeRaw]}
               remarkPlugins={[remarkGfm]}
@@ -128,7 +121,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message, isLastMessage
             isUser ? 'text-primary-foreground/80' : 'text-muted-foreground'
           )}
         >
-          {message.timestamp.toLocaleTimeString()}
+          {new Date(message.created_at).toLocaleTimeString()}
         </div>
       </div>
 

@@ -28,6 +28,6 @@ googlemaps
 elevenlabs
 amadeus==7.1.0
 isodate==0.6.0
- 
+google-cloud-storage
 google-maps-places
 google-genai

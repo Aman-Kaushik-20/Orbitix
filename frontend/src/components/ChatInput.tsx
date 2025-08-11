@@ -5,8 +5,8 @@ import { Attachment } from '../types';
 import { cn } from '../utils/cn';
 
 interface ChatInputProps {
-  onSend: (message: string, attachments: Attachment[]) => void;
-  isStreaming: boolean;
+  onSendMessage: (message: string, attachments?: Attachment[]) => void;
+  isStreaming?: boolean;
   disabled?: boolean;
 }
 
@@ -50,10 +50,10 @@ const uploadFiles = async (files: File[]): Promise<UploadResponse[]> => {
 };
 
 
-export const ChatInput: React.FC<ChatInputProps> = ({ 
-  onSend, 
-  isStreaming, 
-  disabled = false 
+export const ChatInput: React.FC<ChatInputProps> = ({
+  onSendMessage,
+  isStreaming,
+  disabled = false,
 }) => {
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -64,7 +64,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     e.preventDefault();
     if ((!message.trim() && attachments.length === 0) || isStreaming || disabled) return;
 
-    onSend(message.trim(), attachments);
+    onSendMessage(message.trim(), attachments);
     setMessage('');
     setAttachments([]);
   };
