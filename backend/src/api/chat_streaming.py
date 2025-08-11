@@ -15,7 +15,7 @@ import uuid
 chat_streaming_router = APIRouter()
 API_PREFIX = "/api/v1"
 
-@chat_streaming_router.post("/")
+@chat_streaming_router.post("/stream")
 @inject
 async def stream_chat(
     request: ChatRequest,

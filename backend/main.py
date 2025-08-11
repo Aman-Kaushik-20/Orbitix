@@ -171,7 +171,7 @@ app.include_router(
 )
 app.include_router(
     chat_streaming_router, 
-    prefix=f"{API_PREFIX}/stream-chat/stream",
+    prefix=f"{API_PREFIX}/stream-chat",
     tags=["Chat"]
 )
 app.include_router(

@@ -26,7 +26,7 @@ const uploadFiles = async (files: File[]): Promise<UploadResponse[]> => {
   });
 
   // IMPORTANT: Replace with your actual backend URL if it differs
-  const backendUrl = 'http://127.0.0.1:8080/api/v1/upload';
+  const backendUrl = 'https://orbitix-305269403214.europe-west1.run.app/api/v1/upload';
 
   try {
     const response = await fetch(backendUrl, {

@@ -149,8 +149,8 @@ const ChatPage: React.FC = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsThinking(true);
     setSteps([]);
-
-    const response = await fetch('http://localhost:8080/api/v1/stream-chat/stream', {
+    
+    const response = await fetch('https://orbitix-305269403214.europe-west1.run.app/api/v1/stream-chat/stream', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
