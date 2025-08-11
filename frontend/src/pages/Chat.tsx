@@ -14,7 +14,7 @@ const Chat = () => {
 
   const handleNewMessage = async (message: string) => {
     try {
-      const response = await fetch('/api/v1/stream-chat/dummy_stream');
+      const response = await fetch('/api/v1/stream-chat/stream');
       const data = await response.json();
       setSteps(data);
     } catch (error) {
