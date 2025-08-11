@@ -4,15 +4,21 @@
 set -e
 export PYTHONDONTWRITEBYTECODE=1
 find . -type d -name "__pycache__" -exec rm -rf {} +; find . -type f \( -name "*.pyc" -o -name "*.pyo" \) -delete
+
 echo "→ Changing to the 'backend' directory..."
 cd backend
 
-echo "-> Activating .venv "
+echo "→ Creating a virtual environment if it doesn't exist..."
+if [ ! -d ".venv" ]; then
+    python3 -m venv .venv
+fi
+
+echo "→ Activating .venv"
 source .venv/bin/activate
-# if .venv not there, do -> uv venv --seed
-echo "→ Installing dependencies..."
-uv pip install -e .[dev]
+
+echo "→ Installing dependencies from requirements.txt..."
+pip install -r requirements.txt
 
 echo "🚀 Starting the backend server..."
-echo  "Sohail Ji 🥰🥰 yaha par jao 👉 http://localhost:8080/docs "
+echo "Sohail Ji 🥰🥰 yaha par jao 👉 http://localhost:8080/docs"
 python main.py

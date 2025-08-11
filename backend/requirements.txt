@@ -1,18 +1,8 @@
-# Extras 
-# ipykernel
-# neo4j_graphrag
-# neo4j
 voyageai
-# pandas
-
-
-dotenv
 python-dotenv
 requests
-# PyMuPDF
 openai
 agno
-# ag-ui-protocol
 dependency_injector
 loguru
 fastapi
@@ -29,5 +19,5 @@ elevenlabs
 amadeus==7.1.0
 isodate==0.6.0
 google-cloud-storage
-google-maps-places
+# google-maps-places
 google-genai
