@@ -1,9 +1,14 @@
 # Third Party Dependency Imports
 from dependency_injector import containers, providers
 import asyncpg
-import neo4j
-from neo4j_graphrag.llm import OpenAILLM
-from neo4j._async.driver import AsyncGraphDatabase
+# Neo4j imports (optional for deployment)
+try:
+    import neo4j
+    from neo4j_graphrag.llm import OpenAILLM
+    from neo4j._async.driver import AsyncGraphDatabase
+    NEO4J_AVAILABLE = True
+except ImportError:
+    NEO4J_AVAILABLE = False
 from openai import OpenAI
 from supabase import create_async_client, AsyncClient
 from amadeus import Client as AmadeusClient
@@ -90,14 +95,17 @@ class Container(containers.DeclarativeContainer):
     )
 
 
-    # Third Party Libararies llm abstraction
-    neo4j_ex_llm = providers.Singleton(
-        OpenAILLM,
-        model_name="gpt-4o-mini",
-        model_params={
-            "temperature": 0  # turning temperature down for more deterministic results
-        }
-    )
+    # Third Party Libraries llm abstraction (Neo4j - optional)
+    if NEO4J_AVAILABLE:
+        neo4j_ex_llm = providers.Singleton(
+            OpenAILLM,
+            model_name="gpt-4o-mini",
+            model_params={
+                "temperature": 0  # turning temperature down for more deterministic results
+            }
+        )
+    else:
+        neo4j_ex_llm = None
 
     amadeus_client=AmadeusClient(
         client_id=amadeus_client_id,
@@ -123,13 +131,16 @@ class Container(containers.DeclarativeContainer):
 
     # Database Drivers and Clients
 
-    neo4j_driver = providers.Singleton(neo4j.GraphDatabase.driver, neo4j_uri, auth=(neo4j_username, neo4j_password))
-
-    neo4j_async_driver = providers.Singleton(
-        AsyncGraphDatabase.driver,
-        neo4j_uri,
-        auth=(neo4j_username, neo4j_password)
-    )
+    if NEO4J_AVAILABLE:
+        neo4j_driver = providers.Singleton(neo4j.GraphDatabase.driver, neo4j_uri, auth=(neo4j_username, neo4j_password))
+        neo4j_async_driver = providers.Singleton(
+            AsyncGraphDatabase.driver,
+            neo4j_uri,
+            auth=(neo4j_username, neo4j_password)
+        )
+    else:
+        neo4j_driver = None
+        neo4j_async_driver = None
 
     supabase_client = providers.Resource(
         _init_supabase_client,
