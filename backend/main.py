@@ -2,6 +2,7 @@ import uvicorn
 import time
 from datetime import datetime
 from contextlib import asynccontextmanager
+import os
 
 import src.services.chat_service as chat_service
 import src.services.team_agent_service as team_agent_service
@@ -206,7 +207,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8080,
+        port=int(os.getenv("PORT", 8080)),
         timeout_keep_alive=9000,
         workers=1,
         reload=True,
