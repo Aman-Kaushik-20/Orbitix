@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { ChatPreview, Message, Attachment } from '../types';
-import { localDB, ChatData, MessageData } from '../utils/localDB';
+import { localDB } from '../utils/localDB';
 import { supabase } from '../utils/supabase';
 import { getTimeOfDay } from '../utils/time';
 import { getUserLocationName } from '../utils/location';

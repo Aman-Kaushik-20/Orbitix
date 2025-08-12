@@ -50,10 +50,11 @@ class ChatStorage {
     
     const preview: ChatPreview = {
       id: chat.id,
+      user_id: chat.user_id,
       title: chat.title,
       preview: chat.messages[chat.messages.length - 1]?.content.slice(0, 100) || '',
-      createdAt: chat.createdAt,
-      updatedAt: chat.updatedAt,
+      created_at: chat.createdAt.toISOString(),
+      updated_at: chat.updatedAt.toISOString(),
       messageCount: chat.messages.length,
     };
     
