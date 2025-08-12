@@ -63,9 +63,26 @@ const ThinkingProcess = ({ steps, className }: ThinkingProcessProps) => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="mt-2 text-sm text-gray-500 dark:text-gray-400"
+                    className="mt-2 text-sm text-gray-500 dark:text-gray-400 prose prose-sm dark:prose-invert max-w-none"
                   >
-                    {step.content}
+                    <ReactMarkdown
+                      rehypePlugins={[rehypeRaw]}
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        code({ node, className, children, ...props }) {
+                          const match = /language-(\w+)/.exec(className || '');
+                          return match ? (
+                            <CodeBlock language={match[1]} value={String(children).replace(/$/, '')} />
+                          ) : (
+                            <code className={className} {...props}>
+                              {children}
+                            </code>
+                          );
+                        },
+                      }}
+                    >
+                      {step.content}
+                    </ReactMarkdown>
                   </motion.div>
                 ))}
             </motion.div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Send, Paperclip, X } from 'lucide-react';
+import { Send, Paperclip, X, Loader2 } from 'lucide-react';
 import { useAutosize } from '../hooks/useAutosize';
 import { Attachment } from '../types';
 import { cn } from '../utils/cn';
@@ -57,12 +57,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const [message, setMessage] = useState('');
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useAutosize(message);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if ((!message.trim() && attachments.length === 0) || isStreaming || disabled) return;
+    if ((!message.trim() && attachments.length === 0) || isStreaming || disabled || isUploading) return;
 
     onSendMessage(message.trim(), attachments);
     setMessage('');
@@ -100,6 +101,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     if (validFiles.length === 0) return;
 
     try {
+      setIsUploading(true);
       // 2. Send all valid files in a single API call
       const uploadedFileData = await uploadFiles(validFiles);
 
@@ -121,6 +123,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     } catch (error) {
       // The uploadFiles function already handles showing an alert to the user
       console.error("Could not upload files.", error);
+    } finally {
+      setIsUploading(false);
     }
 
     // Reset file input so the user can select the same file again
@@ -135,24 +139,60 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
   return (
     <div className="border-t bg-background p-4">
+      {/* Upload progress indicator */}
+      {isUploading && (
+        <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span className="text-sm">Uploading files...</span>
+          </div>
+        </div>
+      )}
+
       {/* Attachments preview */}
       {attachments.length > 0 && (
         <div className="mb-3 flex flex-wrap gap-2">
           {attachments.map(attachment => (
             <div
               key={attachment.id}
-              className="flex items-center gap-2 p-2 bg-muted rounded-lg"
+              className="relative group"
             >
-              <span className="text-sm truncate max-w-[200px]">
-                {attachment.name}
-              </span>
-              <button
-                type="button"
-                onClick={() => removeAttachment(attachment.id)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              {attachment.type === 'image' && attachment.url ? (
+                // Image preview
+                <div className="relative">
+                  <img
+                    src={attachment.url}
+                    alt={attachment.name}
+                    className="w-20 h-20 object-cover rounded-lg border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeAttachment(attachment.id)}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                    disabled={isUploading}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-xs p-1 rounded-b-lg truncate">
+                    {attachment.name}
+                  </div>
+                </div>
+              ) : (
+                // File preview (non-image)
+                <div className="flex items-center gap-2 p-2 bg-muted rounded-lg">
+                  <span className="text-sm truncate max-w-[200px]">
+                    {attachment.name}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeAttachment(attachment.id)}
+                    className="text-muted-foreground hover:text-foreground"
+                    disabled={isUploading}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -163,7 +203,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          disabled={isStreaming || disabled}
+          disabled={isStreaming || disabled || isUploading}
           className={cn(
             'flex-shrink-0 p-2 rounded-lg border',
             'hover:bg-accent transition-colors',
@@ -171,7 +211,11 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           )}
           aria-label="Attach file"
         >
-          <Paperclip className="w-5 h-5" />
+          {isUploading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <Paperclip className="w-5 h-5" />
+          )}
         </button>
 
         {/* Hidden file input */}
@@ -192,7 +236,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message... (Shift+Enter for new line)"
-            disabled={isStreaming || disabled}
+            disabled={isStreaming || disabled || isUploading}
             className={cn(
               'w-full resize-none rounded-lg border',
               'px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary',
@@ -208,7 +252,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         {/* Send button */}
         <button
           type="submit"
-          disabled={(!message.trim() && attachments.length === 0) || isStreaming || disabled}
+          disabled={(!message.trim() && attachments.length === 0) || isStreaming || disabled || isUploading}
           className={cn(
             'flex-shrink-0 p-3 rounded-lg bg-primary text-primary-foreground',
             'hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary',

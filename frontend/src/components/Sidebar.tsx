@@ -23,7 +23,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectChat,
   onDeleteChat,
 }) => {
-  const formatDate = (date: Date) => {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
     const now = new Date();
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
     
@@ -123,9 +124,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         {chat.lastMessage || chat.preview}
                       </p>
                       <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground/80">
-                        <span>{formatDate(chat.updatedAt)}</span>
-                        <span>•</span>
-                        <span>{chat.messageCount} messages</span>
+                        <span>{formatDate(chat.updated_at)}</span>
+                        {chat.messageCount && (
+                          <>
+                            <span>•</span>
+                            <span>{chat.messageCount} messages</span>
+                          </>
+                        )}
                       </div>
                     </div>
                     

@@ -4,6 +4,7 @@ import ChatPage from './pages/Chat';
 import SignupForm from './pages/Signup';
 import { supabase } from './utils/supabase';
 import { useEffect, useMemo, useState } from 'react';
+import { ChatProvider } from './contexts/ChatContext';
 
 function App() {
   const [session, setSession] = useState<any>(null);
@@ -51,7 +52,13 @@ function App() {
   const ChatRouteElement = () => {
     if (isOAuthCallback) return <div />; // waiting for Supabase to finish parsing tokens
     if (!authInitialized) return <div />;
-    return session ? <ChatPage /> : <Navigate to="/" />;
+    return session ? (
+      <ChatProvider>
+        <ChatPage />
+      </ChatProvider>
+    ) : (
+      <Navigate to="/" />
+    );
   };
 
   return (

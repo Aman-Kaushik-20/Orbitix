@@ -30,11 +30,12 @@ export interface Chat {
 
 export interface ChatPreview {
   id: string;
+  user_id: string;
   title: string;
-  preview: string;
-  createdAt: Date;
-  updatedAt: Date;
-  messageCount: number;
+  created_at: string;
+  updated_at: string;
+  preview?: string;
+  messageCount?: number;
   lastMessage?: string;
 }
 
