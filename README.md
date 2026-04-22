@@ -2,8 +2,9 @@
 
 **A multi-agent AI system designed to generate deep travel insights using realtime and structured dat from specialized Agents and Public Resources.**
 
-[![Watch the Demo](https://storage.googleapis.com/example_oribitix_bucket/Screenshot%202025-11-18%20224109.png)](https://storage.googleapis.com/example_oribitix_bucket/orbitix_final_4x_3x%20-%20Made%20with%20Clipchamp.mp4)
-*(Click the image above to watch the demo video)*
+<a href="https://x.com/akhtarrr012/status/1955229103495184846?s=20">
+  <img width="1898" height="797" alt="Demo" src="https://github.com/user-attachments/assets/35896c5c-a35c-4ef1-ac95-0f5af19fe45a" />
+</a>
 
 ---
 
